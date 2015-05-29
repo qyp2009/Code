@@ -37,7 +37,6 @@ int main()
 	bbb = aaa;
 	CExample ccc = aaa;
 	bbb.myTestFunc(aaa);
-	bbb.myTestFunc(ccc);
 
 	return 0;	
 }
