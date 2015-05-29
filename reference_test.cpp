@@ -32,13 +32,12 @@ public:
 
 int main()
 {
-	int a;
 	CExample aaa(2);
 	CExample bbb(3);
 	bbb = aaa;
 	CExample ccc = aaa;
 	bbb.myTestFunc(aaa);
-
+	bbb.myTestFunc(ccc);
 
 	return 0;	
 }
