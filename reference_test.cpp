@@ -27,6 +27,7 @@ public:
 	
 	void myTestFunc(CExample ex)
 	{
+		cout << "Test func" << endl;
 	}
 };
 
@@ -36,8 +37,10 @@ int main()
 	CExample bbb(3);
 	bbb = aaa;
 	CExample ccc = aaa;
+	CExample ddd = bbb;
 	bbb.myTestFunc(aaa);
 	bbb.myTestFunc(ccc);
+	ddd.myTestFunc(bbb);
 
 	return 0;	
 }
