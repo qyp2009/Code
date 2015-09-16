@@ -27,7 +27,7 @@ public:
 	
 	void myTestFunc(CExample ex)
 	{
-		cout << "Func Test" <<endl;
+		cout << "jfkslfjk" <<endl;
 	}
 };
 
