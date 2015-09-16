@@ -40,7 +40,7 @@ int main()
 	CExample ddd = bbb;
 	bbb.myTestFunc(aaa);
 	bbb.myTestFunc(ccc);
-
+	ddd.myTestFunc(aaa);
 	return 0;	
 }
 
