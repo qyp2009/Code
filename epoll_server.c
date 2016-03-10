@@ -14,7 +14,7 @@ int main()
 {
    int i, maxi, listenfd, connfd, sockfd, epfd, nfds; 
    ssize_t n; 
-   char line[200];
+   char line[2000];
    socklen_t clilen;
 
    //声明epoll_event结构体的变量, ev用于注册事件, events数组用于回传要处理的事件
@@ -72,7 +72,7 @@ int main()
             if ( (sockfd = events[i].data.fd) < 0){
                continue;
             }
-            if ( (n = read(sockfd, line, 200)) < 0){
+            if ( (n = read(sockfd, line, 2000)) < 0){
                if (errno == ECONNRESET){
                   close(sockfd);
                   events[i].data.fd = -1; 

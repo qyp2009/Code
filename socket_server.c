@@ -51,7 +51,8 @@ int main(int argc, char** argv)
         n = recv(connfd, buff, MAXLINE, 0);
         buff[n] = '\0';
         printf("recv msg from client: %s\n", buff);
-        close(connfd);
+		send(connfd, buff,MAXLINE,0);
+		close(connfd);
     }
 
     //close(listenfd)

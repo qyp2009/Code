@@ -12,7 +12,7 @@
 
 int main(int argc, char** argv)
 {
-    int    sockfd, n;
+    int    sockfd, ns,nr;
     char    recvline[MAX_LINE_LENGTH], sendline[MAX_LINE_LENGTH];
     struct sockaddr_in    servaddr;
 
@@ -44,15 +44,18 @@ int main(int argc, char** argv)
 
     //send()
 	printf("send msg to server: \n");
-	fgets(sendline, MAX_LINE_LENGTH, stdin);
-	if( send(sockfd, sendline, strlen(sendline),0) < 0){
+	gets(sendline);
+	if(( ns = write(sockfd, sendline, strlen(sendline) )) < 0){
 		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
 		exit(0);
 	}
 	memset(recvline,0,MAX_LINE_LENGTH);
-	n = recv(sockfd,recvline,MAX_LINE_LENGTH,0);
+	nr = read(sockfd,recvline,MAX_LINE_LENGTH);
 	printf("response:%s\n",recvline);
-    //close()	
+	printf("send_size:%d\n",ns);
+	printf("recv_size:%d\n",nr);
+    
+	//close()	
 	close(sockfd);
     exit(0);
 }
