@@ -8,13 +8,14 @@
 #include <stdio.h>
  
 #define OPEN_MAX 100
-#define SERV_PORT 6666 
+#define SERV_PORT 6666
+#define BUFFER_LENGTH_MAX 10240
 
 int main()
 {
    int i, maxi, listenfd, connfd, sockfd, epfd, nfds; 
-   ssize_t n; 
-   char line[2000];
+   ssize_t nr,nw; 
+   char line[BUFFER_LENGTH_MAX];
    socklen_t clilen;
 
    //声明epoll_event结构体的变量, ev用于注册事件, events数组用于回传要处理的事件
@@ -72,28 +73,31 @@ int main()
             if ( (sockfd = events[i].data.fd) < 0){
                continue;
             }
-            if ( (n = read(sockfd, line, 2000)) < 0){
-               if (errno == ECONNRESET){
+            if ( (nr = read(sockfd, line, BUFFER_LENGTH_MAX)) < 0){
+			   if (errno == ECONNRESET){
                   close(sockfd);
                   events[i].data.fd = -1; 
                }else{
                   printf("readline error\n");
                }
-            }else if (n == 0){
+            }else if (nr == 0){
                close(sockfd); 
                events[i].data.fd = -1; 
-            }
-
-            printf("receive data:%s\n",line);
-            ev.data.fd=sockfd;              //设置用于写操作的文件描述符
-            ev.events=EPOLLOUT | EPOLLET;   //设置用于注测的写操作事件 
-            //修改sockfd上要处理的事件为EPOLLOUT
-            epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
+            }else{
+				line[nr]='\0';
+				printf("receive data:%s\n",line);
+				printf("recv size:%d\n",nr);
+			    ev.data.fd=sockfd;              //设置用于写操作的文件描述符
+				ev.events=EPOLLOUT | EPOLLET;   //设置用于注测的写操作事件 
+				//修改sockfd上要处理的事件为EPOLLOUT
+				epoll_ctl(epfd, EPOLL_CTL_MOD, sockfd, &ev);
+			}
          } 
          else if(events[i].events&EPOLLOUT)//写事件
          {
             sockfd = events[i].data.fd;
-            write(sockfd, line, n);
+            nw = write(sockfd, line, strlen(line));
+			printf("write size:%d\n",nw);
             ev.data.fd = sockfd;               //设置用于读操作的文件描述符
             ev.events = EPOLLIN | EPOLLET;     //设置用于注册的读操作事件
             //修改sockfd上要处理的事件为EPOLIN

@@ -8,12 +8,12 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 
-#define MAXLINE 4096
+#define MAXLINELENGTH 4096
 
 int main(int argc, char** argv)
 {
     int    sockfd, n;
-    char    recvline[4096], sendline[4096];
+    char    recvline[MAXLINELENGTH], sendline[MAXLINELENGTH];
     struct sockaddr_in    servaddr;
 
     if( argc != 2){
@@ -43,13 +43,15 @@ int main(int argc, char** argv)
     }
 
     //send()
-    printf("send msg to server: \n");
-    fgets(sendline, 4096, stdin);
-    if( send(sockfd, sendline, strlen(sendline), 0) < 0){
-        printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
-        exit(0);
-    }
-
+	printf("send msg to server: \n");
+	fgets(sendline, MAXLINELENGTH, stdin);
+	if( write(sockfd, sendline, strlen(sendline)) < 0){
+		printf("send msg error: %s(errno: %d)\n", strerror(errno), errno);
+		exit(0);
+	}
+	memset(recvline,0,MAXLINELENGTH);
+	n = read(sockfd,recvline,MAXLINELENGTH);
+	printf("response:%s\n",recvline);
     //close()
     close(sockfd);
     exit(0);

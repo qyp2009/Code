@@ -49,10 +49,13 @@ int main(int argc, char** argv)
             printf("accept socket error: %s(errno: %d)",strerror(errno),errno);
             continue;
         }
-        n = recv(connfd, buff, MAXLINE, 0);
-        buff[n] = '\0';
+        n = read(connfd, buff, MAXLINE);
+        if(argc<2)
+			buff[n] = '\0';
         printf("recv msg from client: %s\n", buff);
-		send(connfd, buff,MAXLINE,0);
+		printf("read size:%d\n",n);
+		n = write(connfd, buff,strlen(buff));
+		printf("write size:%d\n",n);
 		close(connfd);
     }
 
