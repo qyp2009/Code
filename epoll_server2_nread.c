@@ -12,7 +12,7 @@
 #define OPEN_MAX 100
 #define SERV_PORT 6666
 #define BUFFER_LENGTH_MAX 10240
-
+#define NREAD 1000
 
 int main(int argc,char *argv[])
 {
@@ -76,7 +76,7 @@ int main(int argc,char *argv[])
             if ( (sockfd = events[i].data.fd) < 0){
                continue;
             }
-            if ( (nr = read(sockfd, line, BUFFER_LENGTH_MAX)) < 0){
+            if ( (nr = read(sockfd, line, NREAD)) < 0){
 			   if (errno == ECONNRESET){
                   close(sockfd);
                   events[i].data.fd = -1; 
@@ -87,11 +87,20 @@ int main(int argc,char *argv[])
                close(sockfd); 
                events[i].data.fd = -1; 
             }else{
-				if(argc<2)
-					line[nr]='\0';
+				if(argc<2)	line[nr]='\0';
 				printf("receive data:%s\n",line);
 				printf("recv size:%d\n",nr);
-			    
+			   
+				if(nr >= NREAD){
+					do{
+						nr = read(sockfd, line, NREAD);
+						if(argc<2)	line[nr]='\0';
+						printf("receive data:%s\n",line);
+						printf("recv size:%d\n",nr);
+						if(nr <NREAD) break;
+					}while(1);
+				}
+
 				ev.data.fd=sockfd;              //设置用于写操作的文件描述符
 				ev.events=EPOLLOUT | EPOLLET;   //设置用于注测的写操作事件 
 				//修改sockfd上要处理的事件为EPOLLOUT
